@@ -44,7 +44,7 @@ RUN /opt/pulp/bin/pip install -U \
 	pip setuptools wheel
 
 # Install plugins
-RUN /opt/pulp/bin/pip install pulpcore==$PULP_VERSION pulp-file==$PULP_FILE_VERSION pulp-container==$PULP_CONTAINER_VERSION pulp-rpm==$PULP_RPM_VERSION pip django-storages[boto3] django-storages[azure] gunicorn
+RUN /opt/pulp/bin/pip install pulpcore==$PULP_VERSION pulp-file==$PULP_FILE_VERSION pulp-container==$PULP_CONTAINER_VERSION pulp-rpm==$PULP_RPM_VERSION pip gunicorn
 
 ## Main image
 FROM fedora:33
