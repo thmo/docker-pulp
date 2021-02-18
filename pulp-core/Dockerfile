@@ -36,15 +36,20 @@ RUN dnf install -y \
       cairo-gobject-devel \
       zchunk-devel
 
-# Install pulp
+# Create virtualenv
 RUN virtualenv -p python3 /opt/pulp
 
 # Ensure uptodate pip and wheel
 RUN /opt/pulp/bin/pip install -U \
 	pip setuptools wheel
 
-# Install plugins
-RUN /opt/pulp/bin/pip install pulpcore==$PULP_VERSION pulp-file==$PULP_FILE_VERSION pulp-container==$PULP_CONTAINER_VERSION pulp-rpm==$PULP_RPM_VERSION pip gunicorn
+# Install pulp and plugins
+RUN /opt/pulp/bin/pip install -U \
+        pulpcore==$PULP_VERSION \
+        pulp-file==$PULP_FILE_VERSION \
+        pulp-container==$PULP_CONTAINER_VERSION \
+        pulp-rpm==$PULP_RPM_VERSION \
+        gunicorn
 
 ## Main image
 FROM fedora:33
