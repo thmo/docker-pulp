@@ -1,4 +1,4 @@
-FROM fedora:31 as build
+FROM fedora:33 as build
 ENV PYTHONUNBUFFERED 1
 
 # https://pypi.org/project/pulpcore/#history
@@ -17,7 +17,7 @@ ENV PULP_RPM_VERSION 3.3.1
 #ENV PULP_REF="2d84e2edabeeff56e718e273128ab6a65cf93c16"
 
 # Install build dependencies
-RUN yum install -y \
+RUN dnf install -y \
       curl \
       python3 python3-virtualenv python3-devel \
       createrepo_c-devel \
@@ -50,7 +50,7 @@ RUN virtualenv -p python3 /opt/pulp
 RUN /opt/pulp/bin/pip install pulpcore==$PULP_VERSION pulp-file==$PULP_FILE_VERSION pulp-container==$PULP_CONTAINER_VERSION pulp-rpm==$PULP_RPM_VERSION pip django-storages[boto3] django-storages[azure] gunicorn
 
 ## Main image
-FROM fedora:31
+FROM fedora:33
 ENV PYTHONUNBUFFERED 1
 ENV PATH /opt/pulp/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
@@ -67,7 +67,7 @@ RUN chmod +x /usr/local/bin/tini
 
 RUN useradd --system -m -d /var/lib/pulp -s /sbin/nologin pulp
 
-RUN yum install -y curl \
+RUN dnf install -y curl \
       python3 \
       createrepo_c-libs \
       postgresql \
@@ -80,7 +80,7 @@ RUN yum install -y curl \
       gobject-introspection \
       expat \
       zchunk-libs \
-    && yum clean all
+    && dnf clean all
 
 WORKDIR /var/lib/pulp
 USER pulp
