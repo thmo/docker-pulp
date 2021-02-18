@@ -61,7 +61,7 @@ ENV DJANGO_SETTINGS_MODULE="pulpcore.app.settings" \
 
 COPY --from=build /opt/pulp /opt/pulp
 
-ENV TINI_VERSION v0.18.0
+ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
 RUN chmod +x /usr/local/bin/tini
 
