@@ -2,15 +2,15 @@ FROM fedora:33 as build
 ENV PYTHONUNBUFFERED 1
 
 # https://pypi.org/project/pulpcore/#history
-ENV PULP_VERSION 3.3.1
+ENV PULP_VERSION 3.10.0
 
 # NOTE: Extension versions must support pulpcore version!
 # https://pypi.org/project/pulp-file/#history
-ENV PULP_FILE_VERSION 0.3.0
+ENV PULP_FILE_VERSION 1.5.0
 # https://pypi.org/project/pulp-container/#history
-ENV PULP_CONTAINER_VERSION 1.3.0
+ENV PULP_CONTAINER_VERSION 2.3.1
 # https://pypi.org/project/pulp-rpm/#history
-ENV PULP_RPM_VERSION 3.3.1
+ENV PULP_RPM_VERSION 3.9.0
 
 # Install build dependencies
 RUN dnf install -y \
