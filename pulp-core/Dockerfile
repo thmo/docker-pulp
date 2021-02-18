@@ -11,6 +11,8 @@ ENV PULP_FILE_VERSION 1.5.0
 ENV PULP_CONTAINER_VERSION 2.3.1
 # https://pypi.org/project/pulp-rpm/#history
 ENV PULP_RPM_VERSION 3.9.0
+# https://pypi.org/project/pulp-python/#history
+ENV PULP_PYTHON_VERSION 3.0.0
 
 # Install build dependencies
 RUN dnf install -y \
@@ -49,6 +51,7 @@ RUN /opt/pulp/bin/pip install -U \
         pulp-file==$PULP_FILE_VERSION \
         pulp-container==$PULP_CONTAINER_VERSION \
         pulp-rpm==$PULP_RPM_VERSION \
+        pulp-python==$PULP_PYTHON_VERSION \
         gunicorn
 
 ## Main image
