@@ -4,4 +4,5 @@ pulp-file==1.5.0
 pulp-container==2.3.1
 pulp-rpm==3.9.0
 pulp-deb==2.9.0
-gunicorn
+gunicorn==20.0.4
+django-storages[boto3]==1.11.1
