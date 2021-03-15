@@ -48,9 +48,6 @@ ENV DJANGO_SETTINGS_MODULE="pulpcore.app.settings" \
 
 COPY --from=build /opt/pulp /opt/pulp
 
-# TODO: tini should be in newer Dockers already; do we need to install this?
-# https://github.com/krallin/tini/#using-tini
-# if not; consider a github scheduled action to check release version
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
 RUN chmod +x /usr/local/bin/tini
