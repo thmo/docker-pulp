@@ -1,4 +1,4 @@
-FROM pulp-core
+FROM kong/pulp-core
 
 ADD entrypoint.sh /entrypoint.sh
 
