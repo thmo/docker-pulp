@@ -1,19 +1,6 @@
 FROM fedora:33 as build
 ENV PYTHONUNBUFFERED 1
 
-# https://pypi.org/project/pulpcore/#history
-ENV PULP_VERSION 3.10.0
-
-# NOTE: Extension versions must support pulpcore version!
-# https://pypi.org/project/pulp-file/#history
-ENV PULP_FILE_VERSION 1.5.0
-# https://pypi.org/project/pulp-container/#history
-ENV PULP_CONTAINER_VERSION 2.3.1
-# https://pypi.org/project/pulp-rpm/#history
-ENV PULP_RPM_VERSION 3.9.0
-# https://pypi.org/project/pulp-python/#history
-ENV PULP_PYTHON_VERSION 3.0.0
-
 # Install build dependencies
 RUN dnf install -y \
       curl \
@@ -46,13 +33,8 @@ RUN /opt/pulp/bin/pip install -U \
 	pip setuptools wheel
 
 # Install pulp and plugins
-RUN /opt/pulp/bin/pip install -U \
-        pulpcore==$PULP_VERSION \
-        pulp-file==$PULP_FILE_VERSION \
-        pulp-container==$PULP_CONTAINER_VERSION \
-        pulp-rpm==$PULP_RPM_VERSION \
-        pulp-python==$PULP_PYTHON_VERSION \
-        gunicorn
+COPY requirements.txt /opt/pulp/pulp-requirements.txt
+RUN /opt/pulp/bin/pip install -U -r /opt/pulp/pulp-requirements.txt
 
 ## Main image
 FROM fedora:33
@@ -66,6 +48,9 @@ ENV DJANGO_SETTINGS_MODULE="pulpcore.app.settings" \
 
 COPY --from=build /opt/pulp /opt/pulp
 
+# TODO: tini should be in newer Dockers already; do we need to install this?
+# https://github.com/krallin/tini/#using-tini
+# if not; consider a github scheduled action to check release version
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
 RUN chmod +x /usr/local/bin/tini
@@ -85,6 +70,7 @@ RUN dnf install -y curl \
       gobject-introspection \
       expat \
       zchunk-libs \
+      compat-openssl10 \
     && dnf clean all
 
 WORKDIR /var/lib/pulp
