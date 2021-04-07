@@ -1,7 +1,9 @@
+# syntax = docker/dockerfile:experimental
 FROM fedora:33 as build
 ENV PYTHONUNBUFFERED 1
 
 # Install build dependencies
+#RUN --mount=type=cache,target=/var/cache/dnf \
 RUN dnf install -y \
       curl \
       python3 python3-virtualenv python3-devel \
@@ -10,6 +12,7 @@ RUN dnf install -y \
       make \
       gcc \
       git \
+      patch \
       libpq-devel \
       ninja-build \
       cairo-devel \
@@ -34,7 +37,17 @@ RUN /opt/pulp/bin/pip install -U \
 
 # Install pulp and plugins
 COPY requirements.txt /opt/pulp/pulp-requirements.txt
-RUN /opt/pulp/bin/pip install -U -r /opt/pulp/pulp-requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    /opt/pulp/bin/pip install -U -r /opt/pulp/pulp-requirements.txt
+
+# patch pulp in a way that'll remain visible from resulting container
+RUN mkdir -p /opt/pulp/kong_patches/
+COPY patches/* /opt/pulp/kong_patches/
+# hopefully there's just one python 3 site-packages...
+RUN for P in /opt/pulp/kong_patches/*; do \
+    patch --verbose -p1 -i "$P" \
+          -d /opt/pulp/lib/python3.*/site-packages/ \
+    ; done
 
 ## Main image
 FROM fedora:33
@@ -57,7 +70,10 @@ RUN chmod +x /usr/local/bin/tini
 
 RUN useradd --system -m -d /var/lib/pulp -s /sbin/nologin pulp
 
-RUN dnf install -y curl \
+# TODO: mount=type=bind,from=build,source=/var/cache/dnf,target=/var/cache/dnf,rw
+# This won't work due to the "clean all", but removing that needs --squash
+RUN --mount=type=cache,target=/var/cache/dnf \
+    dnf install -y curl \
       python3 \
       createrepo_c-libs \
       postgresql \

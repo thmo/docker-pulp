@@ -1,5 +1,12 @@
 ORG ?=
-TAG ?=
+TAG ?= latest
+DOCKER_BUILDKIT=1
+
+ifeq ($(strip $(ORG)),)
+	prefix=
+else
+	prefix=$(ORG)/
+endif
 
 images: build-pulp-core \
         build-pulp-api \
@@ -15,9 +22,9 @@ release: release-pulp-core \
 
 build-%:
 	$(eval IMAGE := $(patsubst build-%,%,$@))
-	sed -i "s,FROM pulp-core,FROM $(ORG)/pulp-core,g" $(IMAGE)/Dockerfile
-	cd $(IMAGE) && docker build --cache-from $(ORG)/$(IMAGE):latest -t $(ORG)/$(IMAGE):$(TAG) .
+	sed -i -E 's,FROM (.*/)?pulp-core(:.+)?([[:space:]].*)?$$,FROM $(prefix)pulp-core:$(TAG),g' $(IMAGE)/Dockerfile
+	cd $(IMAGE) && docker build --cache-from $(prefix)$(IMAGE):latest -t $(prefix)$(IMAGE):$(TAG) .
 
 release-%:
 	$(eval IMAGE := $(patsubst release-%,%,$@))
-	cd $(IMAGE) && docker push $(ORG)/$(IMAGE):$(TAG)
+	cd $(IMAGE) && docker push $(prefix)$(IMAGE):$(TAG)
