@@ -8,6 +8,13 @@ else
 	prefix=$(ORG)/
 endif
 
+# if we're running from github actions, always cache_from tag latest
+ifeq ($(GITHUB_ACTIONS),true)
+	cache_tag=latest
+else
+	cache_tag=$(TAG)
+endif
+
 images: build-pulp-core \
         build-pulp-api \
         build-pulp-content \
@@ -22,8 +29,7 @@ release: release-pulp-core \
 
 build-%:
 	$(eval IMAGE := $(patsubst build-%,%,$@))
-	sed -i -E 's,FROM (.*/)?pulp-core(:.+)?([[:space:]].*)?$$,FROM $(prefix)pulp-core:$(TAG),g' $(IMAGE)/Dockerfile
-	cd $(IMAGE) && docker build --cache-from $(prefix)$(IMAGE):latest -t $(prefix)$(IMAGE):$(TAG) .
+	cd $(IMAGE) && docker build --build-arg FROM_ORG="$(prefix)" --build-arg FROM_TAG="$(TAG)" --cache-from $(prefix)$(IMAGE):$(cache_tag) -t $(prefix)$(IMAGE):$(TAG) .
 
 release-%:
 	$(eval IMAGE := $(patsubst release-%,%,$@))
