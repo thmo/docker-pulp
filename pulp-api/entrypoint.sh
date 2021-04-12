@@ -2,16 +2,16 @@
 
 PULP_API_BIND_PORT=${PULP_API_BIND_PORT:-24817}
 
-echo "[INFO] Collecting static files"
-django-admin collectstatic --noinput
-
 echo "[INFO] Updating database schema"
-django-admin migrate --noinput
+pulpcore-manager migrate --noinput
 
 if [[ -n $PULP_ADMIN_PASSWORD ]]; then
     echo "[INFO] Setting admin password"
-    django-admin reset-admin-password --password ${PULP_ADMIN_PASSWORD}
+    pulpcore-manager reset-admin-password --password ${PULP_ADMIN_PASSWORD}
 fi
+
+echo "[INFO] Collecting static files"
+pulpcore-manager collectstatic --noinput
 
 echo "[INFO] Starting API server"
 gunicorn pulpcore.app.wsgi:application \
