@@ -15,6 +15,7 @@ else
 	cache_tag=$(TAG)
 endif
 
+.EXPORT_ALL_VARIABLES:
 
 images: build-pulp-core \
         build-pulp-api \
@@ -30,6 +31,7 @@ release: release-pulp-core \
 
 build-%:
 	$(eval IMAGE := $(patsubst build-%,%,$@))
+	cp -v .dockerignore $(IMAGE)/
 	cd $(IMAGE) && docker build --build-arg FROM_ORG="$(prefix)" --build-arg FROM_TAG="$(TAG)" --cache-from $(prefix)$(IMAGE):$(cache_tag) -t $(prefix)$(IMAGE):$(TAG) .
 
 release-%:
