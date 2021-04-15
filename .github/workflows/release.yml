@@ -34,8 +34,6 @@ jobs:
           body: Version ${{ steps.versioning.outputs.version }}
           draft: false
           prerelease: false
-      - name: Update pulp-core pin
-        run: sed -i 's|FROM kong/pulp-core.*|FROM kong/pulp-core:${{ steps.versioning.outputs.version }}|g' */Dockerfile
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
