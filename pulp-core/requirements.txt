@@ -3,7 +3,7 @@ pulpcore==3.12.0
 pulp-file==1.6.1
 pulp-container==2.5.0
 pulp-rpm==3.10.0
-pulp-deb==2.11.0
+pulp-deb==2.11.1
 # django-storages[boto3] gets magically expanded by pip freeze
 django-storages==1.11.1
 ## The following requirements were added by pip freeze:
@@ -14,8 +14,8 @@ async-timeout==3.0.1
 asyncio-throttle==1.0.2
 attrs==20.3.0
 backoff==1.10.0
-boto3==1.17.49
-botocore==1.20.49
+boto3==1.17.52
+botocore==1.20.52
 certifi==2020.12.5
 cffi==1.14.5
 chardet==4.0.0
@@ -74,7 +74,7 @@ PyYAML==5.4.1
 redis==3.5.3
 requests==2.25.1
 rq==1.8.0
-s3transfer==0.3.6
+s3transfer==0.3.7
 setuptools==54.2.0
 six==1.15.0
 solv==0.7.17
