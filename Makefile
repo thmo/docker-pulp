@@ -39,9 +39,10 @@ release-%:
 	cd $(IMAGE) && docker push $(prefix)$(IMAGE):$(TAG)
 
 tmp_image=tmp-pulp-core-build
+storages_release_branch=release/kong-prod
 update-requirements:
 	cd pulp-core && \
-	sed -i 's/\(django-storages\)=/\1[boto3]=/; /^## The following requirements.*/,$$d' requirements.txt && \
+	sed -Ei 's/(django-storages)(=|[[:space:]]+@)/\1[boto3]\2/; s~(django-storages)@[[:alnum:]]+$$~\1@$(storages_release_branch)~; /^## The following requirements.*/,$$d' requirements.txt && \
 	docker build --target build -t $(tmp_image) . && \
 	docker run --rm $(tmp_image) /opt/pulp/bin/pip freeze --all -l \
 		-r /opt/pulp/pulp-requirements.txt > requirements.txt
