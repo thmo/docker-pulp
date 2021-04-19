@@ -5,7 +5,10 @@ pulp-container==2.5.1
 pulp-rpm==3.10.0
 pulp-deb==2.11.1
 # django-storages[boto3] gets magically expanded by pip freeze
-django-storages==1.11.1
+# but the [boto3] needs put back to work. Trust in "make update-requirements" :)
+#django-storages[boto3]==1.11.1
+# temporarily use Kong django-storages fork
+django-storages @ git+https://github.com/Kong/django-storages@bc12af7d59fb55d69a374df0198a96dcebb78c9b
 ## The following requirements were added by pip freeze:
 aiodns==2.0.0
 aiofiles==0.6.0
