@@ -2,6 +2,8 @@
 
 PULP_API_BIND_PORT=${PULP_API_BIND_PORT:-24817}
 
+GPG_KEY=/etc/gpg/gpg_key
+
 echo "[INFO] Updating database schema"
 pulpcore-manager migrate --noinput
 
@@ -15,6 +17,18 @@ pulpcore-manager handle-artifact-checksums
 
 echo "[INFO] Collecting static files"
 pulpcore-manager collectstatic --noinput
+
+if [[ -r "$GPG_KEY" ]]; then
+    echo "[INFO] Enabling Signing API"
+    # Import private key
+    gpg --import $GPG_KEY
+    # Export public key
+    gpg --export -a > /tmp/public.key
+    # Export key fingerprint
+    gpg --with-fingerprint --with-colons /tmp/public.key 2>/dev/null | grep fpr: | head -n1 | cut -d: -f10 > /tmp/public.fpr
+
+    pulpcore-manager shell < /opt/pulp/lib/register-signing-api.py
+fi
 
 echo "[INFO] Starting API server"
 gunicorn pulpcore.app.wsgi:application \
