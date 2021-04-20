@@ -1,11 +1,11 @@
 from pulpcore.app.models.content import AsciiArmoredDetachedSigningService
 
-NAME="sign-metadata-v1"
+NAME = "sign-metadata-v1"
 
 # read an already exported public key
 with open("/tmp/public.key") as key:
     with open("/tmp/public.fpr") as fpr:
-        fingerprint = fpr.read().rstrip('\n')
+        fingerprint = fpr.read().rstrip("\n")
         service_name = f"{NAME}-{fingerprint}"
         try:
             AsciiArmoredDetachedSigningService.objects.get(name=service_name)
@@ -17,5 +17,5 @@ with open("/tmp/public.key") as key:
                 pubkey_fingerprint=fingerprint,
                 script="/opt/pulp/bin/sign-metadata",
             )
-         else:
-             print(f"Signing service {service_name} already present")
+        else:
+            print(f"Signing service {service_name} already present")
