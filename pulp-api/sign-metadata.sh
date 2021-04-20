@@ -13,7 +13,7 @@ gpg --quiet --batch --pinentry-mode loopback --yes --detach-sign -u "$ADMIN_ID" 
 # Check the exit status
 STATUS=$?
 if [[ $STATUS -eq 0 ]]; then
-    printf '{"file": "%1", "signature": "%2"}\n' "$FILE_PATH" "$SIGNATURE_PATH"
+    printf '{"file": "%s", "signature": "%s"}\n' "$FILE_PATH" "$SIGNATURE_PATH"
 else
     exit $STATUS
 fi
