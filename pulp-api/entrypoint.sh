@@ -27,7 +27,7 @@ if [[ -r "$GPG_KEY" ]]; then
     # Export key fingerprint
     gpg --with-fingerprint --with-colons /tmp/public.key 2>/dev/null | grep fpr: | head -n1 | cut -d: -f10 > /tmp/public.fpr
 
-    echo -e "5\ny\n" | gpg --command-fd 0 --expert --edit-key "$(cat /tmp/public.fpr)" trust
+    echo -e "5\ny\n" | gpg --batch --pinentry-mode loopback --yes --no-tty --command-fd 0 --expert --edit-key "$(cat /tmp/public.fpr)" trust
 
     pulpcore-manager shell < /opt/pulp/lib/register-signing-api.py
 fi
