@@ -60,6 +60,8 @@ ENV DJANGO_SETTINGS_MODULE="pulpcore.app.settings" \
     PULP_DATABASES__default__USER="pulp"
 
 COPY --from=build /opt/pulp /opt/pulp
+COPY signing.py /opt/pulp/lib/register-signing-api.py
+COPY sign-metadata.sh /opt/pulp/bin/sign-metadata
 
 # TODO: tini should be in newer Dockers already; do we need to install this?
 # https://github.com/krallin/tini/#using-tini
